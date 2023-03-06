@@ -1,3 +1,5 @@
+# Requirements: pip3 install adafruit-blinka , pip3 install adafruit-circuitpython-st7735
+
 import busio
 import adafruit_st7735r as st7735
 
@@ -7,7 +9,7 @@ from pyA20.gpio import connector
 
 gpio.init()
 
-spi = busio.SPI(clock=port.PA14, MOSI=port.PA15, MISO=port.PA16)
+spi = busio.SPI(clock=port.PA14, MOSI=port.PA15)
 
 cs_pin = port.PA13
 dc_pin = port.PA1
