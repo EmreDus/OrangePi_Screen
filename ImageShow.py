@@ -1,4 +1,5 @@
-# Requirements: pip3 install adafruit-blinka , pip3 install adafruit-circuitpython-st7735
+# Requirements: pip3 install spidev, pip3 install pillow, pip3 install numpy (or) sudo apt-get install python3-numpy, 
+#               sudo git clone https://github.com/nvl1109/orangepi_zero_gpio.git => cd orangepi_zero_gpio => sudo python3 setup.py install
 
 from PIL import Image
 import spidev
