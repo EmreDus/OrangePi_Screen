@@ -50,7 +50,7 @@ spi.writebytes([0x00, 0x10])
 gpio.output(DC, 0)
 
 for i in range(color.shape[0]):
-    spi.xfer2(color[i].to_bytes(2, byteorder='big'))
+    spi.xfer2(color[i].tobytes())
 
 gpio.output(CS, gpio.HIGH)  # Set CS pin to high
 
