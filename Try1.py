@@ -1,32 +1,36 @@
-# Requirements: pip3 install adafruit-blinka , pip3 install adafruit-circuitpython-st7735
+import spidev
+import Adafruit_ST7735 as ST7735
 
-import busio
-import adafruit_st7735r as st7735
+# Raspberry Pi pin configuration for SPI
+SCK = 14    # GPIO14, physical pin 23
+SDA = 15    # GPIO15, physical pin 19
+A0 = 1      # GPIO1, physical pin 11
+RESET = 0   # GPIO0, physical pin 13
+CS = 13     # GPIO13, physical pin 24
 
-from pyA20.gpio import gpio
-from pyA20.gpio import port
-from pyA20.gpio import connector
+# Create SPI bus
+spi = spidev.SpiDev()
+spi.open(0, 0)
 
-# Set up the pins as outputs
-gpio.init()
-gpio.setcfg(port.PA14, gpio.OUTPUT)  # Clock
-gpio.setcfg(port.PA15, gpio.OUTPUT)  # MOSI
-gpio.setcfg(port.PA13, gpio.OUTPUT)  # CS
-gpio.setcfg(port.PA1, gpio.OUTPUT)   # DC
-gpio.setcfg(port.PA0, gpio.OUTPUT)   # Reset
+# Initialize display
+disp = ST7735.ST7735(
+    spi=spi,
+    cs=CS,
+    dc=A0,
+    rst=RESET,
+    width=128,
+    height=160
+)
+disp.begin()
 
-spi = busio.SPI(clock=port.PA14, MOSI=port.PA15)
+# Clear display
+disp.clear()
 
-cs_pin = port.PA13
-dc_pin = port.PA1
-reset_pin = port.PA0
+# Draw text
+disp.draw_text(0, 0, "Hello, world!", ST7735.Color565(255, 255, 255))
 
-display = st7735.ST7735R(spi, cs=cs_pin, dc=dc_pin, rst=reset_pin, width=128, height=128, colstart=2, rowstart=1)
+# Update display
+disp.display()
 
-# Draw a rectangle and some text on the display
-display.fill(st7735.BLACK)
-display.rectangle(10, 10, 30, 30, st7735.WHITE)
-display.text("Hello, world!", 0, 0, st7735.WHITE)
-
-# Update the display
-display.show()
+# Close SPI bus
+spi.close()
