@@ -1,10 +1,9 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import spidev
 import numpy as np
 
 from pyA20.gpio import gpio
 from pyA20.gpio import port
-from pyA20.gpio import connector
 
 # Set up the pins as outputs
 gpio.init()
@@ -29,14 +28,7 @@ DC = port.PA1
 RST = port.PA0
 
 # Create image
-image = Image.new("RGB", (128, 128), color="black")
-draw = ImageDraw.Draw(image)
-
-# Add text
-font = ImageFont.truetype("arial.ttf", size=20)
-draw.text((20, 50), "Hello, World!", fill=(255, 255, 255), font=font)
-
-# Convert image to array of RGB pixels
+image = Image.new("RGB", (128, 128), color=(0, 0, 255))
 pixels = np.array(image.convert('RGB')).astype(np.uint16)
 
 # Convert RGB pixels to 16-bit color values
