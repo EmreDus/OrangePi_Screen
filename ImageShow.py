@@ -35,7 +35,7 @@ RST = port.PA0
 image = Image.open("example.jpg")
 image = image.convert("1")
 # Resize the image to fit the screen
-image = image.resize((128, 128), Image.ANTIALIAS)
+image = image.resize((128, 128), resample=Image.Resampling.LANCZOS)
 # Convert the image to an array of RGB pixels
 pixels = np.array(image.convert('RGB')).astype(np.uint16)
 
@@ -50,7 +50,8 @@ spi.writebytes([0x00, 0x10])
 gpio.output(DC, 0)
 
 for i in range(color.shape[0]):
-    spi.xfer2(list(color[i]))
+    spi.xfer2(color[i].to_bytes(2, byteorder='big'))
+
 gpio.output(CS, gpio.HIGH)  # Set CS pin to high
 
 # Close SPI
