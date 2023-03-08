@@ -32,7 +32,7 @@ DC = port.PA1
 RST = port.PA0
 
 # Load image
-image = Image.open("image.png")
+image = Image.open("example.jpg")
 image = image.convert("1")
 # Resize the image to fit the screen
 image = image.resize((128, 128), Image.ANTIALIAS)
@@ -44,15 +44,14 @@ color = ((pixels[:, :, 0] & 0xF8) << 8) | ((pixels[:, :, 1] & 0xFC) << 3) | (pix
 
 # Display image
 gpio.output(CS, gpio.LOW)   # Set CS pin to low
-GPIO.output(RST, 1)
+gpio.output(RST, 1)
 gpio.output(DC, 1)
 spi.writebytes([0x00, 0x10])
 gpio.output(DC, 0)
 
-for i in range(data.shape[0]):
-    spi.writebytes(list(data[i]))
+for i in range(color.shape[0]):
+    spi.xfer2(list(color[i]))
 gpio.output(CS, gpio.HIGH)  # Set CS pin to high
 
 # Close SPI
 spi.close()
-gpio.close()
