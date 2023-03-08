@@ -12,33 +12,14 @@ import displayio
 from adafruit_display_text import label
 from adafruit_st7735r import ST7735R
 
-from pyA20.gpio import gpio
-from pyA20.gpio import port
-from pyA20.gpio import connector
-
-# Set up the pins as outputs
-gpio.init()
-gpio.setcfg(port.PA14, gpio.OUTPUT)  # Clock
-gpio.setcfg(port.PA15, gpio.OUTPUT)  # MOSI
-gpio.setcfg(port.PA13, gpio.OUTPUT)  # CS
-gpio.setcfg(port.PA1, gpio.OUTPUT)   # DC
-gpio.setcfg(port.PA0, gpio.OUTPUT)   # Reset
-
 # Release any resources currently in use for the displays
 displayio.release_displays()
 
-spi = busio.SPI(clock=port.PA14, MOSI=port.PA15)
+spi = board.SPI()
+tft_cs = board.PA13
+tft_dc = board.PA1
 
-tft_cs = port.PA13
-tft_dc = port.PA1
-
-#spi = board.SPI()
-#tft_cs = board.D5
-#tft_dc = board.D6
-
-display_bus = displayio.FourWire(
-    spi, command=tft_dc, chip_select=tft_cs, reset=port.PA0
-)
+display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=board.PA0)
 
 display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
 
