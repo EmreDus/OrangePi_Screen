@@ -1,32 +1,34 @@
-import OPi.GPIO as GPIO
-import displayio
+import spidev
 from adafruit_st7735r import ST7735R
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(24, GPIO.OUT) # set pin 24 as output
+from pyA20.gpio import gpio
+from pyA20.gpio import port
+from pyA20.gpio import connector
 
-spi = board.SPI()
-tft_cs = 17 # set the chip select pin PA13
-tft_dc = 8 # set the data/command pin (PA1)
+# Orange Pi Zero LTS configuration.
+cs = port.PA13 
+dc = port.PA1
+rst = port.PA0
 
-displayio.release_displays()
-display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs, reset=27)
+SPI_PORT = 0
+SPI_DEVICE = 1
 
-display = ST7735R(display_bus, width=128, height=128, colstart=2, rowstart=1)
+# Create SPI interface.
+spi = spidev.SpiDev()
+spi.open(SPI_PORT, SPI_DEVICE)
+spi.max_speed_hz = 4000000
 
-# Make the display context
-splash = displayio.Group()
-display.show(splash)
+# Create LCD class instance.
+display = ST7735R(spi, dc=DC, rst=RST)
 
-color_bitmap = displayio.Bitmap(128, 128, 1)
-color_palette = displayio.Palette(1)
-color_palette[0] = 0xFF0000
+# Initialize display.
+display.begin()
 
-bg_sprite = displayio.TileGrid(color_bitmap, pixel_shader=color_palette, x=0, y=0)
-splash.append(bg_sprite)
+# Clear the screen.
+display.fill(0)
 
-while True:
-    GPIO.output(24, GPIO.HIGH) # turn on LED
-    time.sleep(0.5)
-    GPIO.output(24, GPIO.LOW) # turn off LED
-    time.sleep(0.5)
+# Draw some text on the screen.
+display.draw_text('Hello, world!', x=10, y=10, color=(255, 255, 255))
+
+# Update the display.
+display.show()
